@@ -29,15 +29,14 @@ function Label({ children, htmlFor, required }) {
   );
 }
 
-function PageHeader({ title, backTo }) {
+function PageHeader({ title }) {
   const navigate = useNavigate();
-  const goBack = () => (backTo ? navigate(backTo) : navigate(-1));
   return (
     <header className="flex items-start justify-between border-b border-surface-border bg-white px-6 py-5 sm:px-8">
       <div className="flex items-start gap-4">
         <button
           type="button"
-          onClick={goBack}
+          onClick={() => navigate(-1)}
           className="mt-0.5 inline-flex items-center gap-2 rounded-[10px] border border-surface-border bg-white px-3 py-2 text-sm font-medium text-slate-600 shadow-sm transition-colors hover:bg-surface-page"
         >
           <ArrowLeft size={16} strokeWidth={2} />
@@ -624,7 +623,7 @@ function SuccessModal({ onClose, onViewSubmission }) {
   );
 }
 
-export default function KYCFlow({ embedded }) {
+export default function KYCFlow() {
   const navigate = useNavigate();
   const { company, submitKycApplication, simulateKycVerified } = useAuth();
   const [phase, setPhase] = useState('intro');
@@ -632,13 +631,11 @@ export default function KYCFlow({ embedded }) {
   const [docs, setDocs] = useState(initialDocs);
   const [confirmAccurate, setConfirmAccurate] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
-  const shell = embedded ? 'min-h-0 bg-transparent' : 'min-h-screen bg-surface-page';
-  const backTo = embedded ? '/settings/company' : undefined;
 
   if (company?.kycStatus === 'Verified') {
     return (
-      <div className={shell}>
-        <PageHeader title="KYC Verification" backTo={backTo} />
+      <div className="min-h-screen bg-surface-page">
+        <PageHeader title="KYC Verification" />
         <div className="mx-auto max-w-lg px-4 py-10 sm:px-6">
           <div className="rounded-xl border border-surface-border bg-white p-8 text-center shadow-sm">
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-forest">
@@ -663,8 +660,8 @@ export default function KYCFlow({ embedded }) {
 
   if (submitted && !successOpen) {
     return (
-      <div className={shell}>
-        <PageHeader title="KYC Verification" backTo={backTo} />
+      <div className="min-h-screen bg-surface-page">
+        <PageHeader title="KYC Verification" />
         <div className="mx-auto max-w-lg px-4 py-10 sm:px-6">
           <div className="rounded-xl border border-surface-border bg-white p-8 text-center shadow-sm">
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-amber-50 text-amber-700">
@@ -704,8 +701,7 @@ export default function KYCFlow({ embedded }) {
 
   const handleSuccessDone = () => {
     setSuccessOpen(false);
-    if (embedded) navigate('/settings/company');
-    else navigate(-1);
+    navigate(-1);
   };
 
   const handleViewSubmission = () => {
@@ -715,8 +711,8 @@ export default function KYCFlow({ embedded }) {
   const intro = phase === 'intro';
 
   return (
-    <div className={shell}>
-      <PageHeader title="KYC Verification" backTo={backTo} />
+    <div className="min-h-screen bg-surface-page">
+      <PageHeader title="KYC Verification" />
 
       <div className={`mx-auto px-4 py-6 sm:px-6 lg:px-8 lg:py-8 ${intro ? 'max-w-lg' : 'max-w-3xl'}`}>
         {intro ? (

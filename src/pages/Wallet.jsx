@@ -7,7 +7,6 @@ import {
   Copy,
   CheckCircle,
   Building2,
-  ShieldCheck,
   Upload,
   MoreVertical,
   Activity,
@@ -15,6 +14,7 @@ import {
   Info,
   Plus,
   ChevronRight,
+  ShieldCheck,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { company as mockCompany } from '../data/mockData';
@@ -405,6 +405,7 @@ function ActivatePayrollWalletModal({ open, onClose, sourceName, currentBalanceG
 export default function Wallet() {
   const navigate = useNavigate();
   const { company: authCompany } = useAuth();
+  const kycVerified = authCompany?.kycStatus === 'Verified';
   const persisted = loadPersisted();
 
   const [payrollActivated, setPayrollActivated] = useState(persisted.payrollActivated);
@@ -450,55 +451,52 @@ export default function Wallet() {
 
   const bankAcct = `${AFFINITY_ACCOUNT_RAW.slice(0, 10)}… (${mockCompany.name})`;
 
-  const kycVerified = authCompany?.kycStatus === 'Verified';
-
-  if (!kycVerified) {
-    return (
-      <div className="min-h-full bg-surface-page">
-        <PageHeader
-          title="Wallets"
-          subtitle="Wallet and funding tools unlock after your company passes KYC verification."
-        />
-        <div className="mx-auto flex max-w-6xl justify-center px-4 py-12 sm:px-6 sm:py-20 lg:px-8">
-          <div className="w-full max-w-md rounded-2xl border border-surface-border bg-white px-8 py-12 text-center shadow-sm sm:px-10 sm:py-14">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-[10px] border border-surface-border bg-surface-page text-slate-400">
-              <ShieldCheck size={28} strokeWidth={1.5} />
-            </div>
-            <h2 className="mt-5 text-lg font-bold text-slate-900">No wallet access yet</h2>
-            <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-slate-600">
-              Complete KYC so we can verify your business and provision your Affinity account. After approval, you&apos;ll
-              manage balances, payroll wallet activation, and transfers from this page.
-            </p>
-            <button
-              type="button"
-              onClick={() => navigate('/settings/kyc')}
-              className="mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-forest px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-forest-dark"
-            >
-              Complete KYC
-              <ChevronRight size={18} strokeWidth={2} />
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-full bg-surface-page">
       <PageHeader
         title="Wallets"
-        subtitle="Manage your Affinity account, fund your payroll wallet, and monitor balances."
+        subtitle={
+          kycVerified
+            ? 'Manage your Affinity account, fund your payroll wallet, and monitor balances.'
+            : 'Complete KYC verification to unlock your Affinity wallet and payroll funding.'
+        }
         actions={
-          <button
-            type="button"
-            className="inline-flex items-center gap-2 rounded-[10px] border border-surface-border bg-white px-3 py-2 text-sm font-medium text-slate-600 shadow-sm transition-colors hover:bg-surface-page"
-          >
-            <Upload size={16} strokeWidth={1.75} />
-            Export Report
-          </button>
+          kycVerified ? (
+            <button
+              type="button"
+              className="inline-flex items-center gap-2 rounded-[10px] border border-surface-border bg-white px-3 py-2 text-sm font-medium text-slate-600 shadow-sm transition-colors hover:bg-surface-page"
+            >
+              <Upload size={16} strokeWidth={1.75} />
+              Export Report
+            </button>
+          ) : null
         }
       />
 
+      {!kycVerified ? (
+        <div className="mx-auto max-w-6xl p-4 sm:p-6 lg:p-8">
+          <div className="flex justify-center">
+            <div className="w-full max-w-lg rounded-2xl border border-surface-border bg-white px-8 py-12 text-center shadow-sm">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-[10px] border border-amber-100 bg-amber-50 text-amber-700">
+                <ShieldCheck size={28} strokeWidth={1.75} />
+              </div>
+              <h2 className="mt-5 text-lg font-bold text-slate-900">Verify your organisation to use wallets</h2>
+              <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-slate-600">
+                Affinity account details, balances, and payroll wallet features are available after KYC is completed and approved.
+              </p>
+              <button
+                type="button"
+                onClick={() => navigate('/settings/kyc')}
+                className="mt-8 inline-flex items-center gap-2 rounded-full bg-forest px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-forest-dark"
+              >
+                Complete KYC
+                <ArrowRight size={18} strokeWidth={2} />
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <>
       <ActivatePayrollWalletModal
         open={showActivate}
         onClose={() => setShowActivate(false)}
@@ -741,6 +739,8 @@ export default function Wallet() {
           </Button>
         </div>
       </Modal>
+        </>
+      )}
     </div>
   );
 }

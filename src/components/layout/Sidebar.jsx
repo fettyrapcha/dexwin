@@ -127,7 +127,7 @@ export default function Sidebar() {
               <LifeBuoy size={18} strokeWidth={1.75} className="text-slate-400" />
               <span>Support</span>
             </a>
-            <NavRowLink to="/settings/company" icon={Settings} label="Settings" active={activeSettings} />
+            <NavRowLink to="/settings" icon={Settings} label="Settings" active={activeSettings} />
           </div>
 
           {!onboardingFullyComplete && (

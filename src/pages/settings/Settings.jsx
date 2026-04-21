@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { useLocation, useNavigate, NavLink, Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Building2, ShieldCheck, Users, ListChecks,
   Plus, RefreshCw, CheckCircle,
   Clock, ChevronRight, Circle
 } from 'lucide-react';
 import KYCFlow from './KYCFlow';
-import { CompanyProfileForm } from './CompanyProfile';
+import CompanyProfile, { CompanyProfileForm } from './CompanyProfile';
 import { teamMembers as initialMembers, checklistSteps } from '../../data/mockData';
 import Badge from '../../components/ui/Badge';
 import Modal from '../../components/ui/Modal';
@@ -42,7 +42,7 @@ function SectionHeader({ title, desc }) {
 /* ─── tab: Company Profile ──────────────────────────────────────────────── */
 
 function CompanyTab() {
-  return <CompanyProfileForm cancelTo="/settings/company" />;
+  return <CompanyProfileForm cancelTo="/settings" />;
 }
 
 
@@ -250,172 +250,103 @@ function OnboardingTab() {
   );
 }
 
-/* ─── Settings shell (sidebar + content) ───────────────────────────────── */
+/* ─── main Settings page ────────────────────────────────────────────────── */
 
-const SETTINGS_SECTIONS = [
-  {
-    title: 'Organization',
-    items: [
-      {
-        to: '/settings/company',
-        label: 'Company profile',
-        desc: 'Legal name, branding, and payroll configuration.',
-        icon: Building2,
-      },
-      {
-        to: '/settings/kyc',
-        label: 'KYC & compliance',
-        desc: 'Identity verification for payouts and banking.',
-        icon: ShieldCheck,
-      },
-    ],
-  },
-  {
-    title: 'Workspace',
-    items: [
-      {
-        to: '/settings/roles',
-        label: 'Roles & team',
-        desc: 'Invitations and role-based access.',
-        icon: Users,
-      },
-      {
-        to: '/settings/onboarding',
-        label: 'Onboarding',
-        desc: 'Setup checklist for your company.',
-        icon: ListChecks,
-      },
-    ],
-  },
+const tabs = [
+  { id: 'company',    label: 'Company profile', icon: Building2  },
+  { id: 'kyc',        label: 'KYC',             icon: ShieldCheck },
+  { id: 'roles',      label: 'Roles & team',    icon: Users       },
+  { id: 'onboarding', label: 'Onboarding',      icon: ListChecks  },
 ];
 
-function pageMetaForPath(pathname) {
-  if (pathname.includes('/kyc')) {
-    return {
-      title: 'KYC & compliance',
-      desc: 'Submit and track verification required to process payroll payments.',
-    };
-  }
-  if (pathname.includes('/roles')) {
-    return {
-      title: 'Roles & team',
-      desc: 'Invite colleagues and review preset permission levels.',
-    };
-  }
-  if (pathname.includes('/onboarding')) {
-    return {
-      title: 'Onboarding',
-      desc: 'Complete setup tasks to unlock the full payroll experience.',
-    };
-  }
-  return {
-    title: 'Company profile',
-    desc: 'Update organisation details, statutory options, and preferences used on payroll runs.',
-  };
-}
-
-function SettingsMainContent({ pathname }) {
-  if (pathname.includes('/kyc')) return <KYCFlow embedded />;
-  if (pathname.includes('/roles')) return <RolesTab />;
-  if (pathname.includes('/onboarding')) return <OnboardingTab />;
-  return <CompanyTab />;
-}
+const tabContent = {
+  company:    <CompanyTab />,
+  roles:      <RolesTab />,
+  onboarding: <OnboardingTab />,
+};
 
 export default function Settings() {
   const location = useLocation();
-  const { pathname } = location;
-  const meta = pageMetaForPath(pathname);
-  const isKyc = pathname.includes('/kyc');
+  const navigate = useNavigate();
+  const defaultTab = location.pathname.includes('kyc')
+    ? 'kyc'
+    : location.pathname.includes('roles')
+      ? 'roles'
+      : location.pathname.includes('onboarding')
+        ? 'onboarding'
+        : 'company';
+  const [active, setActive] = useState(defaultTab);
 
-  if (pathname === '/settings') {
-    return <Navigate to="/settings/company" replace />;
+  useEffect(() => {
+    if (location.pathname.includes('kyc')) setActive('kyc');
+    else if (location.pathname.includes('roles')) setActive('roles');
+    else if (location.pathname.includes('onboarding')) setActive('onboarding');
+    else if (location.pathname === '/settings') setActive('company');
+  }, [location.pathname]);
+
+  if (location.pathname === '/settings/company') {
+    return <CompanyProfile />;
+  }
+
+  if (location.pathname === '/settings/kyc') {
+    return <KYCFlow />;
   }
 
   return (
-    <div className="min-h-full bg-surface-page">
-      <header className="border-b border-surface-border bg-white px-4 py-5 sm:px-8">
-        <div className="mx-auto max-w-6xl">
-          <h1 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">Settings</h1>
-          <p className="mt-1 max-w-2xl text-sm text-slate-500">
-            Control how DexwinHR represents your company, who can access the workspace, and compliance requirements.
-          </p>
+    <div className="min-h-screen bg-slate-50">
+      {/* Page header */}
+      <div className="bg-white border-b border-slate-100">
+        <div className="px-6 pt-6 pb-0">
+          <h1 className="text-base font-semibold text-slate-800">Settings</h1>
+          <p className="text-xs text-slate-400 mt-0.5 mb-4">Manage your company account, compliance, and team.</p>
+
+          {/* Tab bar */}
+          <div className="flex items-end gap-1">
+            {tabs.map(tab => {
+              const Icon = tab.icon;
+              const isActive = active === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    if (tab.id === 'company') {
+                      navigate('/settings/company');
+                      return;
+                    }
+                    if (tab.id === 'kyc') {
+                      navigate('/settings/kyc');
+                      return;
+                    }
+                    if (tab.id === 'roles') {
+                      navigate('/settings/roles');
+                      return;
+                    }
+                    if (tab.id === 'onboarding') {
+                      navigate('/settings/onboarding');
+                      return;
+                    }
+                    setActive(tab.id);
+                  }}
+                  className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-t-xl border-b-2 transition-all
+                    ${isActive
+                      ? 'border-brand-600 text-brand-700 bg-brand-50/60'
+                      : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50'
+                    }`}
+                >
+                  <Icon size={14} />
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </header>
+      </div>
 
-      <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6 lg:flex-row lg:gap-10 lg:px-8 lg:py-8">
-        <aside className="w-full shrink-0 lg:w-60">
-          <nav className="space-y-6 rounded-2xl border border-surface-border bg-white p-3 shadow-sm lg:sticky lg:top-6">
-            {SETTINGS_SECTIONS.map((section) => (
-              <div key={section.title}>
-                <p className="px-2 pb-2 text-[11px] font-bold uppercase tracking-wide text-slate-400">{section.title}</p>
-                <ul className="space-y-0.5">
-                  {section.items.map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <li key={item.to}>
-                        <NavLink
-                          to={item.to}
-                          className={({ isActive }) =>
-                            `flex items-start gap-3 rounded-xl px-2.5 py-2.5 text-left transition-colors ${
-                              isActive
-                                ? 'bg-emerald-50 text-forest ring-1 ring-emerald-100'
-                                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                            }`
-                          }
-                        >
-                          {({ isActive }) => (
-                            <>
-                              <span
-                                className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border ${
-                                  isActive
-                                    ? 'border-emerald-200 bg-white text-forest'
-                                    : 'border-surface-border bg-surface-page text-slate-500'
-                                }`}
-                              >
-                                <Icon size={16} strokeWidth={1.75} />
-                              </span>
-                              <span className="min-w-0">
-                                <span className="block text-sm font-semibold leading-snug">{item.label}</span>
-                                <span
-                                  className={`mt-0.5 block text-[11px] leading-relaxed ${
-                                    isActive ? 'text-emerald-900/70' : 'text-slate-500'
-                                  }`}
-                                >
-                                  {item.desc}
-                                </span>
-                              </span>
-                            </>
-                          )}
-                        </NavLink>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            ))}
-          </nav>
-        </aside>
-
-        <main className="min-w-0 flex-1">
-          {!isKyc && (
-            <div className="mb-6">
-              <h2 className="text-lg font-bold text-slate-900 sm:text-xl">{meta.title}</h2>
-              <p className="mt-1 text-sm text-slate-500">{meta.desc}</p>
-            </div>
-          )}
-
-          {isKyc ? (
-            <div className="overflow-hidden rounded-2xl border border-surface-border bg-white shadow-sm">
-              <div className="min-h-0 [&>div]:min-h-0">
-                <SettingsMainContent pathname={pathname} />
-              </div>
-            </div>
-          ) : (
-            <div className="rounded-2xl border border-surface-border bg-white p-5 shadow-sm sm:p-8">
-              <SettingsMainContent pathname={pathname} />
-            </div>
-          )}
-        </main>
+      {/* Tab content */}
+      <div className="max-w-3xl mx-auto px-6 py-8">
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-card p-6">
+          {tabContent[active]}
+        </div>
       </div>
     </div>
   );

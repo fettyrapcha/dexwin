@@ -262,7 +262,7 @@ function AddEmployeeFlow({ open, onClose, onSave }) {
                   <div className="relative">
                     <select className={`${field} cursor-pointer appearance-none pr-9`} value={form.employmentType} onChange={set('employmentType')}>
                       <option>Full time</option>
-                      <option>Contract</option>
+          <option>Contract</option>
                       <option>Part time</option>
                     </select>
                     <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -438,9 +438,9 @@ function AddEmployeeFlow({ open, onClose, onSave }) {
               </button>
             </div>
           )}
-        </div>
       </div>
-    </div>
+      </div>
+      </div>
   );
 }
 
@@ -716,35 +716,35 @@ export default function Employees() {
           </div>
         ) : (
           <div className="overflow-hidden rounded-xl border border-surface-border bg-white shadow-sm">
-            <table className="w-full">
-              <thead>
+          <table className="w-full">
+            <thead>
                 <tr className="border-b border-surface-border bg-slate-50/80">
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-slate-500">Employee</th>
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-slate-500">Employee ID</th>
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-slate-500">Type</th>
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-slate-500">Gross Salary</th>
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-slate-500">Status</th>
-                  <th className="px-5 py-3 text-left text-xs font-semibold text-slate-500">Start Date</th>
-                  <th className="px-2 py-3" />
-                </tr>
-              </thead>
+                <th className="px-5 py-3 text-left text-xs font-semibold text-slate-500">Employee</th>
+                <th className="px-5 py-3 text-left text-xs font-semibold text-slate-500">Employee ID</th>
+                <th className="px-5 py-3 text-left text-xs font-semibold text-slate-500">Type</th>
+                <th className="px-5 py-3 text-left text-xs font-semibold text-slate-500">Gross Salary</th>
+                <th className="px-5 py-3 text-left text-xs font-semibold text-slate-500">Status</th>
+                <th className="px-5 py-3 text-left text-xs font-semibold text-slate-500">Start Date</th>
+                <th className="px-2 py-3" />
+              </tr>
+            </thead>
               <tbody className="divide-y divide-slate-100">
                 {filtered.map((emp) => (
                   <tr key={emp.id} className="transition-colors hover:bg-slate-50/50">
-                    <td className="px-5 py-3.5">
-                      <div className="flex items-center gap-3">
+                  <td className="px-5 py-3.5">
+                    <div className="flex items-center gap-3">
                         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-semibold text-brand-700">
                           {emp.name
                             .split(' ')
                             .map((n) => n[0])
                             .join('')}
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-slate-800">{emp.name}</p>
-                          <p className="text-xs text-slate-400">{emp.title}</p>
-                        </div>
                       </div>
-                    </td>
+                      <div>
+                        <p className="text-sm font-medium text-slate-800">{emp.name}</p>
+                        <p className="text-xs text-slate-400">{emp.title}</p>
+                      </div>
+                    </div>
+                  </td>
                     <td className="px-5 py-3.5 font-mono text-xs text-slate-500">{emp.id}</td>
                     <td className="px-5 py-3.5">
                       <Badge label={emp.type} />
@@ -753,17 +753,17 @@ export default function Employees() {
                     <td className="px-5 py-3.5">
                       <Badge label={emp.status} />
                     </td>
-                    <td className="px-5 py-3.5 text-xs text-slate-500">{emp.startDate}</td>
-                    <td className="px-2 py-3.5">
-                      <div className="relative">
-                        <button
+                  <td className="px-5 py-3.5 text-xs text-slate-500">{emp.startDate}</td>
+                  <td className="px-2 py-3.5">
+                    <div className="relative">
+                      <button
                           type="button"
                           className="rounded p-1 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
-                          onClick={() => setOpenMenu(openMenu === emp.id ? null : emp.id)}
-                        >
-                          <MoreVertical size={15} />
-                        </button>
-                        {openMenu === emp.id && (
+                        onClick={() => setOpenMenu(openMenu === emp.id ? null : emp.id)}
+                      >
+                        <MoreVertical size={15} />
+                      </button>
+                      {openMenu === emp.id && (
                           <div className="absolute right-0 top-7 z-10 w-36 rounded-xl border border-slate-100 bg-white py-1 shadow-card-hover">
                             <button
                               type="button"
@@ -792,20 +792,20 @@ export default function Employees() {
                             >
                               Delete
                             </button>
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {filtered.length === 0 && (
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {filtered.length === 0 && (
               <div className="border-t border-surface-border py-14 text-center text-sm text-slate-500">
                 No employees match your filters or search.
               </div>
-            )}
-          </div>
+          )}
+        </div>
         )}
       </div>
 

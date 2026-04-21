@@ -4,8 +4,7 @@ import {
   ShieldCheck,
   Building2,
   CreditCard,
-  UserPlus,
-  ChevronRight,
+  ArrowRight,
   Bell,
   Plus,
   Download,
@@ -284,6 +283,7 @@ function EmptyDashboard({ companyName, navigate }) {
       path: '/settings/company',
       icon: Building2,
       done: profileSaved,
+      actionLabel: 'Setup',
     },
     {
       title: 'Complete KYC & Submit to Affinity',
@@ -291,13 +291,15 @@ function EmptyDashboard({ companyName, navigate }) {
       path: '/settings/kyc',
       icon: ShieldCheck,
       done: kycDone,
+      actionLabel: 'Activate',
     },
     {
       title: 'Add Employees',
       desc: 'Add employees individually or import via CSV.',
       path: '/employees',
-      icon: UserPlus,
+      icon: Users,
       done: employeesDone,
+      actionLabel: 'Add',
     },
   ];
 
@@ -336,12 +338,14 @@ function EmptyDashboard({ companyName, navigate }) {
         </div>
 
         <div className="grid gap-5 lg:grid-cols-5">
-          <div className="rounded-xl border border-surface-border bg-white lg:col-span-3">
-            <div className="border-b border-surface-border px-6 py-5">
-              <h3 className="text-sm font-bold text-slate-900">Onboarding checklist</h3>
-              <p className="mt-1 text-xs text-slate-500">Complete all steps to unlock payroll disbursements.</p>
+          <div className="rounded-2xl border border-slate-200 bg-white shadow-sm lg:col-span-3">
+            <div className="border-b border-slate-200 px-6 py-5 sm:px-7 sm:py-6">
+              <h3 className="text-base font-bold tracking-tight text-slate-900">Onboarding checklist</h3>
+              <p className="mt-1.5 text-sm font-normal leading-relaxed text-slate-500">
+                Complete all steps to unlock payroll disbursements.
+              </p>
             </div>
-            <div className="divide-y divide-surface-border">
+            <div className="divide-y divide-slate-200">
               {checklist.map((row) => {
                 const Icon = row.icon;
                 const done = row.done === true;
@@ -357,32 +361,26 @@ function EmptyDashboard({ companyName, navigate }) {
                         navigate(row.path);
                       }
                     }}
-                    className="flex w-full cursor-pointer gap-4 px-6 py-5 text-left transition-colors hover:bg-slate-50/80"
+                    className="flex w-full cursor-pointer items-center gap-4 px-6 py-6 text-left transition-colors hover:bg-slate-50/80 sm:gap-5 sm:px-7 sm:py-6"
                   >
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] border border-surface-border bg-slate-50 text-slate-500">
-                      <Icon size={18} strokeWidth={1.75} />
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-500">
+                      <Icon size={20} strokeWidth={1.5} />
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold text-slate-900">{row.title}</p>
+                    <div className="min-w-0 flex-1 pr-2">
+                      <p className="text-sm font-bold text-slate-900">{row.title}</p>
                       <p className="mt-1 text-xs leading-relaxed text-slate-500">{row.desc}</p>
                     </div>
                     <div className="shrink-0 self-center">
                       {done ? (
-                        <span className="inline-flex rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-forest ring-1 ring-emerald-100">
+                        <span className="inline-flex items-center gap-1 text-sm font-medium text-slate-600">
+                          <Check size={16} strokeWidth={2.25} className="text-emerald-600" aria-hidden />
                           Done
                         </span>
                       ) : (
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(row.path);
-                          }}
-                          className="inline-flex items-center gap-0.5 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-800 ring-1 ring-amber-100 transition-colors hover:bg-amber-100"
-                        >
-                          Pending
-                          <ChevronRight size={14} strokeWidth={2} className="text-amber-700" aria-hidden />
-                        </button>
+                        <span className="inline-flex items-center gap-1 text-sm font-medium text-slate-700">
+                          {row.actionLabel}
+                          <ArrowRight size={16} strokeWidth={1.5} className="text-slate-500" aria-hidden />
+                        </span>
                       )}
                     </div>
                   </div>
