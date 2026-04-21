@@ -45,6 +45,92 @@ export const company = {
   tier3Partner: 'Individual Cap',
 };
 
+export const clients = [
+  {
+    id: 'CLT-001',
+    name: 'Volta River Authority',
+    contactName: 'Kweku Mensah',
+    email: 'kweku.mensah@vra.com.gh',
+    phone: '+233 30 221 4567',
+    tin: 'C0011223344',
+    industry: 'Energy & Utilities',
+    status: 'Active',
+    kycStatus: 'Verified',
+    walletName: 'Volta River Authority',
+    walletBalance: 184500,
+    employeeCount: 34,
+    lastPayroll: { period: 'March 2026', amount: 142800, date: '2026-03-31' },
+    createdAt: '2024-01-10',
+  },
+  {
+    id: 'CLT-002',
+    name: 'Accra Breweries Ltd.',
+    contactName: 'Abena Darko',
+    email: 'a.darko@accrabreweries.com',
+    phone: '+233 24 876 5432',
+    tin: 'C0022334455',
+    industry: 'Manufacturing',
+    status: 'Active',
+    kycStatus: 'Verified',
+    walletName: 'Accra Breweries Ltd.',
+    walletBalance: 95200,
+    employeeCount: 18,
+    lastPayroll: { period: 'March 2026', amount: 68400, date: '2026-03-31' },
+    createdAt: '2024-03-05',
+  },
+  {
+    id: 'CLT-003',
+    name: 'GreenPath Logistics',
+    contactName: 'Yaw Boateng',
+    email: 'y.boateng@greenpath.com.gh',
+    phone: '+233 55 345 6789',
+    tin: 'C0033445566',
+    industry: 'Logistics & Supply Chain',
+    status: 'Pending',
+    kycStatus: 'Pending',
+    walletName: 'GreenPath Logistics',
+    walletBalance: 0,
+    employeeCount: 9,
+    lastPayroll: null,
+    createdAt: '2026-03-20',
+  },
+  {
+    id: 'CLT-004',
+    name: 'Kumasi Tech Hub',
+    contactName: 'Efua Asante',
+    email: 'e.asante@kumasitechhub.com',
+    phone: '+233 20 654 3210',
+    tin: 'C0044556677',
+    industry: 'Technology',
+    status: 'Active',
+    kycStatus: 'Verified',
+    walletName: 'Kumasi Tech Hub',
+    walletBalance: 52800,
+    employeeCount: 12,
+    lastPayroll: { period: 'March 2026', amount: 43600, date: '2026-03-31' },
+    createdAt: '2024-07-15',
+  },
+];
+
+export const clientEmployees = {
+  'CLT-001': [
+    { id: 'CE-001-1', name: 'Kwame Osei', title: 'Senior Engineer', type: 'Full-time', status: 'Active', grossSalary: 12000, bank: 'GCB Bank', accountNo: '1111222233', paye: 1400, tier1: 5.5, tier2: 5, tier3: 0, bonus: 800, allowances: 600 },
+    { id: 'CE-001-2', name: 'Adwoa Frempong', title: 'Finance Officer', type: 'Full-time', status: 'Active', grossSalary: 8500, bank: 'Ecobank', accountNo: '2222333344', paye: 900, tier1: 5.5, tier2: 5, tier3: 0, bonus: 300, allowances: 400 },
+    { id: 'CE-001-3', name: 'Kojo Agyei', title: 'HR Manager', type: 'Full-time', status: 'Active', grossSalary: 9800, bank: 'Fidelity Bank', accountNo: '3333444455', paye: 1050, tier1: 5.5, tier2: 5, tier3: 2, bonus: 500, allowances: 500 },
+  ],
+  'CLT-002': [
+    { id: 'CE-002-1', name: 'Nana Ama Boateng', title: 'Production Manager', type: 'Full-time', status: 'Active', grossSalary: 10500, bank: 'Stanbic Bank', accountNo: '4444555566', paye: 1200, tier1: 5.5, tier2: 5, tier3: 0, bonus: 600, allowances: 500 },
+    { id: 'CE-002-2', name: 'Kofi Atta', title: 'Quality Analyst', type: 'Full-time', status: 'Active', grossSalary: 7200, bank: 'Cal Bank', accountNo: '5555666677', paye: 750, tier1: 5.5, tier2: 5, tier3: 0, bonus: 0, allowances: 300 },
+  ],
+  'CLT-003': [
+    { id: 'CE-003-1', name: 'Serwaa Mensah', title: 'Logistics Coordinator', type: 'Full-time', status: 'Active', grossSalary: 6800, bank: 'Access Bank', accountNo: '6666777788', paye: 700, tier1: 5.5, tier2: 5, tier3: 0, bonus: 0, allowances: 200 },
+  ],
+  'CLT-004': [
+    { id: 'CE-004-1', name: 'Kwesi Owusu', title: 'Lead Developer', type: 'Full-time', status: 'Active', grossSalary: 13500, bank: 'GCB Bank', accountNo: '7777888899', paye: 1600, tier1: 5.5, tier2: 5, tier3: 0, bonus: 1000, allowances: 700 },
+    { id: 'CE-004-2', name: 'Akua Boadu', title: 'UX Researcher', type: 'Contract', status: 'Active', grossSalary: 7500, bank: 'Ecobank', accountNo: '8888999900', paye: 0, tier1: 0, tier2: 0, tier3: 0, bonus: 0, allowances: 300 },
+  ],
+};
+
 export const checklistSteps = [
   { id: 1, label: 'Complete Company Profile', status: 'Complete', path: '/settings/company' },
   { id: 2, label: 'Complete KYC & Submit to Affinity', status: 'Complete', path: '/settings/kyc' },

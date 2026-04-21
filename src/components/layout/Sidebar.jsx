@@ -13,6 +13,7 @@ import {
   Circle,
   ChevronsUpDown,
   LogOut,
+  Building2,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -74,6 +75,7 @@ export default function Sidebar() {
   const path = location.pathname;
   const activeExact = (p) => path === p;
   const activeEmployees = path === '/employees' || path.startsWith('/employees/');
+  const activeClients = path === '/clients' || path.startsWith('/clients/');
   const activeSettings = path.startsWith('/settings');
 
   const profileSaved = company?.companyProfileSaved === true;
@@ -112,6 +114,7 @@ export default function Sidebar() {
             badge={employees.length > 0 ? employees.length : undefined}
             active={activeEmployees}
           />
+          <NavRowLink to="/clients" icon={Building2} label="Clients" active={activeClients} />
           <NavRowLink to="/payroll" icon={FileSpreadsheet} label="Run Payroll" active={activeExact('/payroll')} />
           <NavRowLink to="/wallet" icon={Wallet} label="Wallets" active={activeExact('/wallet')} />
           <NavRowLink to="/transactions" icon={ArrowLeftRight} label="Transactions" active={activeExact('/transactions')} />

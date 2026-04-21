@@ -10,6 +10,8 @@ import Payroll from './pages/Payroll';
 import Transactions from './pages/Transactions';
 import Wallet from './pages/Wallet';
 import AuditLog from './pages/AuditLog';
+import Clients from './pages/Clients';
+import ClientProfile from './pages/ClientProfile';
 import Settings from './pages/settings/Settings';
 
 function ProtectedRoute({ children }) {
@@ -32,7 +34,9 @@ function AppRoutes() {
       <Route path="/"                element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/employees"       element={<ProtectedRoute><Employees /></ProtectedRoute>} />
       <Route path="/employees/:id"   element={<ProtectedRoute><EmployeeProfile /></ProtectedRoute>} />
-      <Route path="/payroll"         element={<ProtectedRoute><Payroll /></ProtectedRoute>} />
+      <Route path="/clients"          element={<ProtectedRoute><Clients /></ProtectedRoute>} />
+      <Route path="/clients/:id"      element={<ProtectedRoute><ClientProfile /></ProtectedRoute>} />
+      <Route path="/payroll"          element={<ProtectedRoute><Payroll /></ProtectedRoute>} />
       <Route path="/transactions"    element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
       <Route path="/audit-log"       element={<ProtectedRoute><AuditLog /></ProtectedRoute>} />
       <Route path="/wallet"          element={<ProtectedRoute><Wallet /></ProtectedRoute>} />
