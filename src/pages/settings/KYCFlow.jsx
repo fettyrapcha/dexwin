@@ -78,7 +78,7 @@ const initialLegal = {
 };
 
 const initialDocs = {
-  incorporation: { fileName: 'incorp_cert.pdf', sizeLabel: '2.4 MB', complete: true },
+  incorporation: null,
   registration: null,
   renewal: null,
   regulation: null,
@@ -408,7 +408,6 @@ function DocRow({ docKey, doc, onPick, onClear }) {
       </div>
       <p className="text-sm font-medium text-slate-800">
         {meta.uploadLabel}
-        <span className="text-forest"> *</span>
       </p>
       <p className="text-xs text-slate-500">Click to upload or drag and drop</p>
     </button>

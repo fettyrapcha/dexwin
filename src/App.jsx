@@ -13,6 +13,7 @@ import AuditLog from './pages/AuditLog';
 import Clients from './pages/Clients';
 import ClientProfile from './pages/ClientProfile';
 import Settings from './pages/settings/Settings';
+import RoleManagement from './pages/RoleManagement';
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
@@ -45,6 +46,7 @@ function AppRoutes() {
       <Route path="/settings/kyc"        element={<ProtectedRoute><Settings /></ProtectedRoute>} />
       <Route path="/settings/roles"      element={<ProtectedRoute><Settings /></ProtectedRoute>} />
       <Route path="/settings/onboarding" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+      <Route path="/roles" element={<ProtectedRoute><RoleManagement /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

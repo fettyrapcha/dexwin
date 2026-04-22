@@ -1,6 +1,6 @@
 import { useMemo, useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, ArrowRight, ChevronDown, Mail } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight, ChevronDown, Mail, Building2, Users } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import Button from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
@@ -295,6 +295,7 @@ export default function Register() {
   const navigate = useNavigate();
   const { register } = useAuth();
   const [step, setStep] = useState('form');
+  const [accountType, setAccountType] = useState('company');
   const [showSales, setShowSales] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const [errors, setErrors] = useState({});
@@ -342,7 +343,7 @@ export default function Register() {
   const handleVerified = (data) => {
     const digits = data.phoneNational.replace(/\D/g, '');
     const phone = `${dialCode}${digits}`;
-    register({ name: data.companyName, email: data.email, phone });
+    register({ name: data.companyName, email: data.email, phone, accountType });
     navigate('/');
   };
 
@@ -370,6 +371,34 @@ export default function Register() {
           <p className="text-sm text-slate-500 mb-8">Your central hub for seamless payroll management</p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Account type selector */}
+            <div>
+              <p className="text-sm font-medium text-slate-700 mb-2">Account type</p>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { value: 'company', icon: Building2, label: 'Company', desc: 'Manage your own team & payroll' },
+                  { value: 'agency', icon: Users, label: 'Payroll Agency', desc: 'Manage payroll for multiple clients' },
+                ].map(({ value, icon: Icon, label, desc }) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setAccountType(value)}
+                    className={`flex flex-col items-start gap-1.5 rounded-xl border px-4 py-3.5 text-left transition-all
+                      ${accountType === value
+                        ? 'border-[#0b8558] bg-[#0b8558]/5 ring-1 ring-[#0b8558]'
+                        : 'border-slate-200 bg-white hover:border-slate-300'
+                      }`}
+                  >
+                    <div className={`flex items-center gap-2 font-semibold text-sm ${accountType === value ? 'text-[#0b8558]' : 'text-slate-700'}`}>
+                      <Icon size={15} strokeWidth={1.75} />
+                      {label}
+                    </div>
+                    <p className="text-xs text-slate-400 leading-snug">{desc}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div>
               <label htmlFor="reg-company" className="block mb-1.5">
                 <RequiredLabel>Company Name</RequiredLabel>

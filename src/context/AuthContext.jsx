@@ -11,6 +11,7 @@ export function AuthProvider({ children }) {
   const register = (companyData) => {
     setCompany({
       ...companyData,
+      accountType: companyData.accountType || 'company',
       kycStatus: 'Pending',
       onboardingComplete: false,
       companyProfileSaved: false,
@@ -24,6 +25,7 @@ export function AuthProvider({ children }) {
   const login = (email, password) => {
     setCompany({
       name: 'Dexwin Technologies Ltd.',
+      accountType: 'agency',
       kycStatus: 'Verified',
       onboardingComplete: true,
       companyProfileSaved: true,

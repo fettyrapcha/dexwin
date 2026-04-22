@@ -14,6 +14,7 @@ import {
   ChevronsUpDown,
   LogOut,
   Building2,
+  Shield,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -77,6 +78,7 @@ export default function Sidebar() {
   const activeEmployees = path === '/employees' || path.startsWith('/employees/');
   const activeClients = path === '/clients' || path.startsWith('/clients/');
   const activeSettings = path.startsWith('/settings');
+  const activeRoles = path === '/roles';
 
   const profileSaved = company?.companyProfileSaved === true;
   const inviteDone = company?.inviteCompleted === true;
@@ -101,7 +103,7 @@ export default function Sidebar() {
       {/* Logo */}
       <div className="flex h-[4.25rem] items-center gap-2.5 border-b border-surface-border px-5">
         <DexwinLogoMark />
-        <span className="text-lg font-bold tracking-tight text-slate-900">DexwinHR</span>
+        <span className="text-lg font-bold tracking-tight text-slate-900">DexwinPay</span>
       </div>
 
       <nav className="flex min-h-0 flex-1 flex-col overflow-y-auto px-3 pb-3 pt-4 scrollbar-thin">
@@ -114,11 +116,14 @@ export default function Sidebar() {
             badge={employees.length > 0 ? employees.length : undefined}
             active={activeEmployees}
           />
-          <NavRowLink to="/clients" icon={Building2} label="Clients" active={activeClients} />
+          {company?.accountType === 'agency' && (
+            <NavRowLink to="/clients" icon={Building2} label="Clients" active={activeClients} />
+          )}
           <NavRowLink to="/payroll" icon={FileSpreadsheet} label="Run Payroll" active={activeExact('/payroll')} />
           <NavRowLink to="/wallet" icon={Wallet} label="Wallets" active={activeExact('/wallet')} />
           <NavRowLink to="/transactions" icon={ArrowLeftRight} label="Transactions" active={activeExact('/transactions')} />
           <NavRowLink to="/audit-log" icon={ClipboardList} label="Audit Log" active={activeExact('/audit-log')} />
+          <NavRowLink to="/roles" icon={Shield} label="Role Management" active={activeRoles} />
         </div>
 
         <div className="mt-auto flex flex-col gap-6 border-t border-transparent pt-6">
