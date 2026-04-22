@@ -80,16 +80,17 @@ export default function Sidebar() {
   const activeSettings = path.startsWith('/settings');
   const activeRoles = path === '/roles';
 
+  const isAgency = company?.accountType === 'agency';
   const profileSaved = company?.companyProfileSaved === true;
   const inviteDone = company?.inviteCompleted === true;
   const kycDone = company?.kycStatus === 'Verified';
-  const onboardingTotal = 4;
   const checklist = [
     { id: 'reg', label: 'Company registration', done: true },
     { id: 'prof', label: 'Company profile', done: profileSaved },
     { id: 'inv', label: 'Invite employee', done: inviteDone },
-    { id: 'kyc', label: 'Complete company KYC', done: kycDone },
+    ...(!isAgency ? [{ id: 'kyc', label: 'Complete company KYC', done: kycDone }] : []),
   ];
+  const onboardingTotal = checklist.length;
   const onboardingDone = checklist.filter((c) => c.done).length;
   const pct = Math.round((onboardingDone / onboardingTotal) * 100);
   const onboardingFullyComplete =

@@ -4,6 +4,7 @@ import {
   ArrowLeft, Building2, Users, Wallet, CheckCircle, Clock,
   AlertCircle, Pencil, Play, ChevronRight, Mail, Phone,
   FileText, Shield, Plus, X, Zap, ShieldCheck, DollarSign,
+  TrendingUp, ArrowUpRight,
 } from 'lucide-react';
 import { clients, clientEmployees } from '../data/mockData';
 
@@ -139,13 +140,21 @@ function RunPayrollModal({ client, employees, onClose }) {
                   { label: 'Employees', value: employees.length },
                   { label: 'Total gross', value: fmt(totals.gross) },
                   { label: 'Total net (disbursement)', value: fmt(totals.net) },
+                  { label: 'Wallet balance', value: fmt(client.walletBalance), highlight: client.walletBalance >= totals.net },
+                  { label: 'Balance after payroll', value: fmt(client.walletBalance - totals.net), warn: (client.walletBalance - totals.net) < 0 },
                 ].map(r => (
                   <div key={r.label} className="flex justify-between">
                     <p className="text-xs text-slate-400">{r.label}</p>
-                    <p className="text-xs font-semibold text-slate-800">{r.value}</p>
+                    <p className={`text-xs font-semibold ${r.warn ? 'text-red-500' : r.highlight ? 'text-forest' : 'text-slate-800'}`}>{r.value}</p>
                   </div>
                 ))}
               </div>
+              {client.walletBalance < totals.net && (
+                <div className="flex items-start gap-2 bg-red-50 rounded-xl p-3 border border-red-100">
+                  <AlertCircle size={13} className="text-red-400 shrink-0 mt-0.5" />
+                  <p className="text-xs text-red-600 font-medium">Wallet balance is insufficient. Fund the wallet before processing payroll.</p>
+                </div>
+              )}
 
 
               <label className="flex items-center gap-2.5 cursor-pointer">
@@ -157,11 +166,113 @@ function RunPayrollModal({ client, employees, onClose }) {
             <div className="flex justify-end gap-2.5 px-6 py-4 border-t border-slate-100 bg-slate-50/60">
               <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors">Cancel</button>
               <button
-                disabled={!confirmed || processing}
+                disabled={!confirmed || processing || client.walletBalance < totals.net}
                 onClick={handleRun}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-forest hover:bg-forest-dark rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {processing ? <><span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" /> Processing…</> : <><Play size={13} /> Process payroll</>}
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ─── Fund Wallet modal ─────────────────────────────────────────────────── */
+
+function FundWalletModal({ client, onClose, onFund }) {
+  const [amount, setAmount] = useState('');
+  const [done, setDone] = useState(false);
+  const parsed = parseFloat(amount.replace(/,/g, '')) || 0;
+
+  const handleFund = () => {
+    if (parsed <= 0) return;
+    onFund(parsed);
+    setDone(true);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={!done ? onClose : undefined} />
+      <div className="relative w-full max-w-sm rounded-2xl bg-white shadow-2xl overflow-hidden">
+        {done ? (
+          <div className="flex flex-col items-center text-center py-10 px-6">
+            <div className="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center mb-4">
+              <CheckCircle size={24} className="text-forest" />
+            </div>
+            <h3 className="text-lg font-bold text-slate-900 mb-1">Wallet funded!</h3>
+            <p className="text-sm text-slate-500 mb-0.5">{fmt(parsed)} added to</p>
+            <p className="text-sm font-semibold text-slate-700 mb-6">{client.walletName}</p>
+            <button onClick={onClose} className="px-6 py-2.5 text-sm font-semibold text-white bg-forest hover:bg-forest-dark rounded-xl transition-colors">Done</button>
+          </div>
+        ) : (
+          <>
+            <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-forest/10 flex items-center justify-center">
+                  <Wallet size={16} className="text-forest" />
+                </div>
+                <div>
+                  <h2 className="text-base font-bold text-slate-900">Fund wallet</h2>
+                  <p className="text-xs text-slate-400 mt-0.5">{client.walletName}</p>
+                </div>
+              </div>
+              <button onClick={onClose} className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 transition-colors"><X size={18} /></button>
+            </div>
+
+            <div className="px-6 py-5 space-y-4">
+              <div className="bg-slate-50 rounded-2xl p-4 flex items-center justify-between">
+                <p className="text-xs text-slate-400">Current balance</p>
+                <p className="text-sm font-bold text-slate-800">{fmt(client.walletBalance)}</p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">Amount to fund (GH₵)</label>
+                <div className="relative">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-semibold text-slate-400">GH₵</span>
+                  <input
+                    type="number"
+                    min="1"
+                    placeholder="0.00"
+                    value={amount}
+                    onChange={e => setAmount(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 pl-12 pr-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-forest/20 focus:border-forest transition-colors bg-white"
+                  />
+                </div>
+              </div>
+
+              {/* Quick amounts */}
+              <div className="flex gap-2">
+                {[10000, 50000, 100000].map(n => (
+                  <button
+                    key={n}
+                    type="button"
+                    onClick={() => setAmount(String(n))}
+                    className="flex-1 text-xs font-semibold text-forest bg-emerald-50 hover:bg-emerald-100 py-2 rounded-xl transition-colors"
+                  >
+                    +{(n / 1000).toFixed(0)}k
+                  </button>
+                ))}
+              </div>
+
+              {parsed > 0 && (
+                <div className="bg-slate-50 rounded-2xl p-4 flex items-center justify-between">
+                  <p className="text-xs text-slate-400">Balance after funding</p>
+                  <p className="text-sm font-bold text-forest">{fmt(client.walletBalance + parsed)}</p>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-end gap-2.5 px-6 py-4 border-t border-slate-100 bg-slate-50/60">
+              <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors">Cancel</button>
+              <button
+                disabled={parsed <= 0}
+                onClick={handleFund}
+                className="px-4 py-2 text-sm font-semibold text-white bg-forest hover:bg-forest-dark rounded-xl transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Confirm funding
               </button>
             </div>
           </>
@@ -184,6 +295,7 @@ export default function ClientProfile() {
   const [tab, setTab] = useState('Overview');
   const [showEdit, setShowEdit] = useState(false);
   const [showPayroll, setShowPayroll] = useState(false);
+  const [showFund, setShowFund] = useState(false);
 
   if (!clientData) {
     return (
@@ -254,11 +366,24 @@ export default function ClientProfile() {
               </div>
 
               {/* Quick stats */}
-              <div className="flex items-center gap-4 shrink-0">
+              <div className="flex items-center gap-6 shrink-0">
                 <div className="text-center">
                   <p className="text-xl font-bold text-slate-800">{clientData.employeeCount}</p>
                   <p className="text-xs text-slate-400">Employees</p>
                 </div>
+                <div className="w-px h-8 bg-slate-100" />
+                <div className="text-center">
+                  <p className={`text-xl font-bold ${clientData.walletBalance > 0 ? 'text-forest' : 'text-slate-400'}`}>
+                    {fmt(clientData.walletBalance)}
+                  </p>
+                  <p className="text-xs text-slate-400">Wallet balance</p>
+                </div>
+                <button
+                  onClick={() => setShowFund(true)}
+                  className="flex items-center gap-1.5 text-xs font-semibold text-forest bg-emerald-50 hover:bg-emerald-100 px-3 py-2 rounded-xl transition-colors"
+                >
+                  <ArrowUpRight size={13} /> Fund wallet
+                </button>
               </div>
             </div>
           </div>
@@ -306,33 +431,35 @@ export default function ClientProfile() {
 
             {/* Right col */}
             <div className="space-y-4">
-              {/* Payroll summary */}
+
+              {/* Wallet card */}
               <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
-                <div className="px-5 py-4 border-b border-slate-50">
-                  <h3 className="text-sm font-semibold text-slate-800">Payroll snapshot</h3>
+                <div className="px-5 py-4 border-b border-slate-50 flex items-center justify-between">
+                  <h3 className="text-sm font-semibold text-slate-800">Client wallet</h3>
+                  <Wallet size={14} className="text-slate-300" />
                 </div>
-                <div className="p-5 space-y-3">
-                  {[
-                    { label: 'Total gross', value: fmt(totalGross) },
-                    { label: 'Total net', value: fmt(totalNet), highlight: true },
-                    { label: 'Employees', value: `${employees.length} staff` },
-                  ].map(s => (
-                    <div key={s.label} className="flex justify-between">
-                      <p className="text-xs text-slate-400">{s.label}</p>
-                      <p className={`text-sm font-semibold ${s.highlight ? 'text-forest' : 'text-slate-800'}`}>{s.value}</p>
-                    </div>
-                  ))}
-                  {clientData.lastPayroll && (
-                    <div className="pt-2 border-t border-slate-50">
-                      <p className="text-xs text-slate-400 mb-1">Last payroll</p>
-                      <p className="text-xs font-semibold text-slate-700">{clientData.lastPayroll.period}</p>
-                      <p className="text-sm font-bold text-slate-800 mt-0.5">{fmt(clientData.lastPayroll.amount)}</p>
+                <div className="p-5">
+                  <p className="text-xs text-slate-400 mb-1">{clientData.walletName}</p>
+                  <p className={`text-2xl font-bold tracking-tight ${clientData.walletBalance > 0 ? 'text-slate-900' : 'text-slate-300'}`}>
+                    {fmt(clientData.walletBalance)}
+                  </p>
+                  {clientData.walletBalance < totalNet && clientData.walletBalance > 0 && (
+                    <div className="mt-3 flex items-start gap-2 bg-amber-50 rounded-xl p-3 border border-amber-100">
+                      <AlertCircle size={13} className="text-amber-500 shrink-0 mt-0.5" />
+                      <p className="text-xs text-amber-700 font-medium">Insufficient for next payroll ({fmt(totalNet)} needed)</p>
                     </div>
                   )}
-                </div>
-                <div className="px-5 pb-4">
-                  <button onClick={() => setShowPayroll(true)} className="w-full flex items-center justify-center gap-1.5 text-xs font-semibold text-white bg-forest hover:bg-forest-dark py-2.5 rounded-xl transition-colors">
-                    <Zap size={12} /> Run payroll now
+                  {clientData.walletBalance === 0 && (
+                    <div className="mt-3 flex items-start gap-2 bg-red-50 rounded-xl p-3 border border-red-100">
+                      <AlertCircle size={13} className="text-red-400 shrink-0 mt-0.5" />
+                      <p className="text-xs text-red-600 font-medium">Wallet is empty — fund before running payroll</p>
+                    </div>
+                  )}
+                  <button
+                    onClick={() => setShowFund(true)}
+                    className="mt-4 w-full flex items-center justify-center gap-1.5 text-xs font-semibold text-forest border border-forest/20 bg-emerald-50 hover:bg-emerald-100 py-2.5 rounded-xl transition-colors"
+                  >
+                    <ArrowUpRight size={12} /> Fund wallet
                   </button>
                 </div>
               </div>
@@ -467,6 +594,14 @@ export default function ClientProfile() {
           client={clientData}
           employees={employees}
           onClose={() => setShowPayroll(false)}
+        />
+      )}
+
+      {showFund && (
+        <FundWalletModal
+          client={clientData}
+          onClose={() => setShowFund(false)}
+          onFund={(amount) => setClientData(c => ({ ...c, walletBalance: c.walletBalance + amount }))}
         />
       )}
     </div>

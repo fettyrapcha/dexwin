@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import {
   Building2, ShieldCheck, Users, ListChecks,
   Plus, RefreshCw, CheckCircle,
@@ -252,7 +253,7 @@ function OnboardingTab() {
 
 /* ─── main Settings page ────────────────────────────────────────────────── */
 
-const tabs = [
+const ALL_TABS = [
   { id: 'company',    label: 'Company profile', icon: Building2  },
   { id: 'kyc',        label: 'KYC',             icon: ShieldCheck },
   { id: 'roles',      label: 'Roles & team',    icon: Users       },
@@ -268,27 +269,30 @@ const tabContent = {
 export default function Settings() {
   const location = useLocation();
   const navigate = useNavigate();
-  const defaultTab = location.pathname.includes('kyc')
-    ? 'kyc'
-    : location.pathname.includes('roles')
-      ? 'roles'
-      : location.pathname.includes('onboarding')
-        ? 'onboarding'
-        : 'company';
+  const { company } = useAuth();
+  const isAgency = company?.accountType === 'agency';
+  const tabs = ALL_TABS.filter(t => !(isAgency && t.id === 'kyc'));
+
+  const defaultTab =
+    location.pathname.includes('kyc') && !isAgency ? 'kyc'
+    : location.pathname.includes('roles') ? 'roles'
+    : location.pathname.includes('onboarding') ? 'onboarding'
+    : 'company';
   const [active, setActive] = useState(defaultTab);
 
   useEffect(() => {
-    if (location.pathname.includes('kyc')) setActive('kyc');
+    if (location.pathname.includes('kyc') && !isAgency) setActive('kyc');
     else if (location.pathname.includes('roles')) setActive('roles');
     else if (location.pathname.includes('onboarding')) setActive('onboarding');
     else if (location.pathname === '/settings') setActive('company');
-  }, [location.pathname]);
+  }, [location.pathname, isAgency]);
 
   if (location.pathname === '/settings/company') {
     return <CompanyProfile />;
   }
 
   if (location.pathname === '/settings/kyc') {
+    if (isAgency) { navigate('/settings', { replace: true }); return null; }
     return <KYCFlow />;
   }
 
