@@ -312,8 +312,7 @@ export default function Register() {
     setErrors((er) => ({ ...er, [k]: '' }));
   };
 
-  const passwordOk = (p) =>
-    p.length >= 8 && /[A-Za-z]/.test(p) && /\d/.test(p) && /[^A-Za-z0-9]/.test(p);
+  const passwordOk = (p) => p.length >= 6;
 
   const formReady = useMemo(() => {
     return (
@@ -329,7 +328,7 @@ export default function Register() {
     if (!form.companyName.trim()) e.companyName = 'Company name is required.';
     if (!form.email.includes('@')) e.email = 'Enter a valid email address.';
     if (form.phoneNational.replace(/\D/g, '').length < 9) e.phoneNational = 'Enter a valid phone number.';
-    if (!passwordOk(form.password)) e.password = 'Use 8+ characters with letters, numbers, and symbols.';
+    if (!passwordOk(form.password)) e.password = 'Password must be at least 6 characters.';
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -486,7 +485,6 @@ export default function Register() {
                   {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
-              <p className="mt-1.5 text-xs text-slate-500">Use 8 characters with letters, numbers, and symbols.</p>
               {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password}</p>}
             </div>
 
