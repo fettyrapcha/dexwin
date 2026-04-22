@@ -124,9 +124,9 @@ function AddClientModal({ onClose, onAdd }) {
             <input className={inputClass('tin')} placeholder="C00..." value={form.tin} onChange={set('tin')} />
           </div>
 
-          <div className="bg-amber-50 border border-amber-100 rounded-xl p-3 text-xs text-amber-700 flex items-start gap-2">
-            <ShieldCheck size={14} className="shrink-0 mt-0.5 text-amber-500" />
-            A linked wallet will be created automatically using the company name. KYC must be completed before payroll can be processed.
+          <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 text-xs text-slate-500 flex items-start gap-2">
+            <Wallet size={14} className="shrink-0 mt-0.5 text-slate-400" />
+            A linked wallet will be created automatically using the company name.
           </div>
         </div>
 
@@ -169,27 +169,13 @@ function ClientCard({ client, onClick }) {
       </div>
 
       {/* Stats row */}
-      <div className="grid grid-cols-3 gap-3 mb-4">
+      <div className="grid grid-cols-1 gap-3 mb-4">
         <div className="bg-slate-50 rounded-xl p-3">
           <div className="flex items-center gap-1.5 mb-1">
             <Users size={11} className="text-slate-400" />
             <p className="text-xs text-slate-400">Employees</p>
           </div>
           <p className="text-sm font-bold text-slate-800">{client.employeeCount}</p>
-        </div>
-        <div className="bg-slate-50 rounded-xl p-3">
-          <div className="flex items-center gap-1.5 mb-1">
-            <Wallet size={11} className="text-slate-400" />
-            <p className="text-xs text-slate-400">Wallet</p>
-          </div>
-          <p className="text-sm font-bold text-slate-800">{client.walletBalance > 0 ? `GH₵ ${(client.walletBalance / 1000).toFixed(0)}k` : '—'}</p>
-        </div>
-        <div className="bg-slate-50 rounded-xl p-3">
-          <div className="flex items-center gap-1.5 mb-1">
-            <CheckCircle size={11} className="text-slate-400" />
-            <p className="text-xs text-slate-400">KYC</p>
-          </div>
-          <KycBadge status={client.kycStatus} />
         </div>
       </div>
 

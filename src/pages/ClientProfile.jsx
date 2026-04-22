@@ -145,18 +145,8 @@ function RunPayrollModal({ client, employees, onClose }) {
                     <p className="text-xs font-semibold text-slate-800">{r.value}</p>
                   </div>
                 ))}
-                <div className="pt-2 border-t border-slate-100 flex justify-between">
-                  <p className="text-sm font-semibold text-slate-700">Wallet balance after</p>
-                  <p className="text-sm font-bold text-forest">{fmt(client.walletBalance - totals.net)}</p>
-                </div>
               </div>
 
-              {client.kycStatus !== 'Verified' && (
-                <div className="flex items-start gap-2.5 bg-amber-50 border border-amber-100 rounded-xl p-3 text-xs text-amber-700">
-                  <AlertCircle size={13} className="shrink-0 mt-0.5 text-amber-500" />
-                  KYC is not verified. Payroll can be prepared but actual disbursement requires a verified Affinity account.
-                </div>
-              )}
 
               <label className="flex items-center gap-2.5 cursor-pointer">
                 <input type="checkbox" checked={confirmed} onChange={e => setConfirmed(e.target.checked)} className="accent-forest w-4 h-4" />
@@ -269,18 +259,6 @@ export default function ClientProfile() {
                   <p className="text-xl font-bold text-slate-800">{clientData.employeeCount}</p>
                   <p className="text-xs text-slate-400">Employees</p>
                 </div>
-                <div className="w-px h-8 bg-slate-100" />
-                <div className="text-center">
-                  <p className="text-xl font-bold text-slate-800">{fmt(clientData.walletBalance)}</p>
-                  <p className="text-xs text-slate-400">Wallet balance</p>
-                </div>
-                <div className="w-px h-8 bg-slate-100" />
-                <div className="text-center">
-                  <p className={`text-sm font-semibold ${clientData.kycStatus === 'Verified' ? 'text-forest' : 'text-amber-600'}`}>
-                    {clientData.kycStatus === 'Verified' ? <span className="flex items-center gap-1"><ShieldCheck size={14} /> Verified</span> : <span className="flex items-center gap-1"><Clock size={14} /> {clientData.kycStatus}</span>}
-                  </p>
-                  <p className="text-xs text-slate-400">KYC status</p>
-                </div>
               </div>
             </div>
           </div>
@@ -315,7 +293,6 @@ export default function ClientProfile() {
                   { label: 'Phone', value: clientData.phone },
                   { label: 'TIN', value: clientData.tin || '—' },
                   { label: 'Industry', value: clientData.industry },
-                  { label: 'Wallet name', value: clientData.walletName },
                   { label: 'Client ID', value: clientData.id, mono: true },
                   { label: 'Created', value: clientData.createdAt },
                 ].map(row => (
@@ -360,18 +337,6 @@ export default function ClientProfile() {
                 </div>
               </div>
 
-              {/* Wallet */}
-              <div className="bg-white rounded-2xl border border-slate-100 p-5">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-7 h-7 rounded-lg bg-violet-50 flex items-center justify-center">
-                    <Wallet size={13} className="text-violet-600" />
-                  </div>
-                  <p className="text-xs font-semibold text-slate-700">Linked wallet</p>
-                </div>
-                <p className="text-xs text-slate-400 truncate mb-1">{clientData.walletName}</p>
-                <p className="text-xl font-bold text-slate-900">{fmt(clientData.walletBalance)}</p>
-                <p className="text-xs text-slate-400 mt-0.5">Available balance</p>
-              </div>
             </div>
           </div>
         )}
